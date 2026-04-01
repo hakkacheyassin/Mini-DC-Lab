@@ -1,0 +1,151 @@
+devops@mini-dc-lab2:~$ sudo virsh list
+ Id   Name            State
+-------------------------------
+ 1    esxi01          running
+ 2    esxi02          running
+ 3    monitoring-vm   running
+ 4    proxmox-bs      running
+ 5    storage-vm      running
+ 6    vcenter01       running
+
+devops@mini-dc-lab2:~$ vim tesxt.sh
+devops@mini-dc-lab2:~$ chmod 755 tesxt.sh
+devops@mini-dc-lab2:~$ ./tesxt.sh
+Saved to esxi-net-storage-20260401-095438.txt
+devops@mini-dc-lab2:~$ cat esxi-net-storage-20260401-095438.txt
+===== 192.168.100.10 =====
+vmk0
+   Name: vmk0
+   MAC Address: 52:54:00:a0:00:10
+   Enabled: true
+   Portset: vSwitch0
+   Portgroup: Management Network
+   Netstack Instance: defaultTcpipStack
+   VDS Name: N/A
+   VDS UUID: N/A
+   VDS Port: N/A
+   VDS Connection: -1
+   Opaque Network ID: N/A
+   Opaque Network Type: N/A
+   External ID: N/A
+   MTU: 1500
+   TSO MSS: 65535
+   RXDispQueue Size: 2
+   Port ID: 100663310
+
+vmk1
+   Name: vmk1
+   MAC Address: 00:50:56:65:78:49
+   Enabled: true
+   Portset: vSwitch1
+   Portgroup: vMotion
+   Netstack Instance: defaultTcpipStack
+   VDS Name: N/A
+   VDS UUID: N/A
+   VDS Port: N/A
+   VDS Connection: -1
+   Opaque Network ID: N/A
+   Opaque Network Type: N/A
+   External ID: N/A
+   MTU: 1500
+   TSO MSS: 65535
+   RXDispQueue Size: 2
+   Port ID: 134217743
+
+vmk2
+   Name: vmk2
+   MAC Address: 00:50:56:63:5b:ab
+   Enabled: true
+   Portset: vSwitch-iSCSI
+   Portgroup: iSCSI
+   Netstack Instance: defaultTcpipStack
+   VDS Name: N/A
+   VDS UUID: N/A
+   VDS Port: N/A
+   VDS Connection: -1
+   Opaque Network ID: N/A
+   Opaque Network Type: N/A
+   External ID: N/A
+   MTU: 1500
+   TSO MSS: 65535
+   RXDispQueue Size: 2
+   Port ID: 67108880
+vSwitch-iSCSI
+   Name: vSwitch-iSCSI
+   Class: cswitch
+   Num Ports: 1820
+   Used Ports: 4
+   Configured Ports: 128
+   MTU: 1500
+   CDP Status: listen
+   Beacon Enabled: false
+   Beacon Interval: 1
+   Beacon Threshold: 3
+   Beacon Required By:
+   Uplinks: vmnic2
+   Portgroups: iSCSI
+
+vSwitch0
+   Name: vSwitch0
+   Class: cswitch
+   Num Ports: 1820
+   Used Ports: 4
+   Configured Ports: 128
+   MTU: 1500
+   CDP Status: listen
+   Beacon Enabled: false
+   Beacon Interval: 1
+   Beacon Threshold: 3
+   Beacon Required By:
+   Uplinks: vmnic0
+   Portgroups: VM Network, Management Network
+
+vSwitch1
+   Name: vSwitch1
+   Class: cswitch
+   Num Ports: 1820
+   Used Ports: 4
+   Configured Ports: 128
+   MTU: 1500
+   CDP Status: listen
+   Beacon Enabled: false
+   Beacon Interval: 1
+   Beacon Threshold: 3
+   Beacon Required By:
+   Uplinks: vmnic1
+   Portgroups: vMotion
+Name    PCI Device    Driver    Admin Status  Link Status  Speed  Duplex  MAC Address         MTU  Description
+------  ------------  --------  ------------  -----------  -----  ------  -----------------  ----  -----------
+vmnic0  0000:02:01.0  nvmxnet3  Up            Up            1000  Full    52:54:00:a0:00:10  1500  VMware Inc. vmxnet3 Virtual Ethernet Controller
+vmnic1  0000:02:02.0  nvmxnet3  Up            Up            1000  Full    52:54:00:b0:00:10  1500  VMware Inc. vmxnet3 Virtual Ethernet Controller
+vmnic2  0000:02:03.0  nvmxnet3  Up            Up            1000  Full    52:54:00:c0:00:10  1500  VMware Inc. vmxnet3 Virtual Ethernet Controller
+Network        Netmask        Gateway        Interface  Source
+-------------  -------------  -------------  ---------  ------
+default        0.0.0.0        192.168.100.1  vmk0       DHCP
+10.0.0.0       255.255.255.0  0.0.0.0        vmk1       MANUAL
+10.0.1.0       255.255.255.0  0.0.0.0        vmk2       MANUAL
+192.168.100.0  255.255.255.0  0.0.0.0        vmk0       MANUAL
+Volume Name  Host            Share               Vmknic  Accessible  Mounted  Connections  Read-Only   isPE  Hardware Acceleration
+-----------  --------------  ------------------  ------  ----------  -------  -----------  ---------  -----  ---------------------
+nfs-shared   192.168.100.30  /storage/nfs-share  None         false    false            1      false  false  Unknown
+Adapter  Driver     State   UID                            Description
+-------  ---------  ------  -----------------------------  -----------
+vmhba64  iscsi_vmk  online  iqn.1998-01.com.vmware:esxi01  iSCSI Software Adapter
+vmhba64,iqn.2026-03.lab.local:storage,00023d000001
+   Adapter: vmhba64
+   Target: iqn.2026-03.lab.local:storage
+   ISID: 00023d000001
+   TargetPortalGroupTag: 1
+   AuthenticationMethod: none
+   DataPduInOrder: true
+   DataSequenceInOrder: true
+   DefaultTime2Retain: 0
+   DefaultTime2Wait: 2
+   ErrorRecoveryLevel: 0
+   FirstBurstLength: 65536
+   ImmediateData: true
+   InitialR2T: true
+   MaxBurstLength: 262144
+   MaxConnections: 1
+   MaxOutstandingR2T: 1
+   TSIH: 1
