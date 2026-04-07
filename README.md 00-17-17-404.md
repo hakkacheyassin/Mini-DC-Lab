@@ -6,7 +6,7 @@
 
 ---
 
-## 📋 Resource Allocation Plan
+## Resource Allocation Plan
 
 | VM | Role | RAM | vCPU | Disk | IP |
 |---|---|---|---|---|---|
@@ -74,7 +74,7 @@ sudo bash scripts/deploy-all.sh --skip-cleanup
 
 ---
 
-## 🔧 Phase 0 — Cleanup (Fresh Start)
+## Phase 0 — Cleanup (Fresh Start)
 
 Run: `sudo bash scripts/00-cleanup.sh`
 
@@ -82,7 +82,7 @@ This destroys ALL existing VMs, networks, and disk images. Interactive confirmat
 
 ---
 
-## 🔧 Phase 1 — Host Prerequisites
+## Phase 1 — Host Prerequisites
 
 ```bash
 # Required packages
@@ -99,7 +99,7 @@ cat /sys/module/kvm_intel/parameters/nested   # Must show "Y"
 
 ---
 
-## 🔧 Phase 2 — Network Bridges
+## Phase 2 — Network Bridges
 
 Run: `sudo bash scripts/01-network-setup.sh`
 
@@ -110,7 +110,7 @@ Creates three bridges:
 
 ---
 
-## 🖥️ Phase 3 — Deploy ESXi Hosts
+## Phase 3 — Deploy ESXi Hosts
 
 > **Prerequisite**: Download VMware ESXi 8 ISO → `/var/lib/libvirt/images/ESXi-8.iso`
 
@@ -187,7 +187,7 @@ vim-cmd hostsvc/start_esx_shell
 
 ---
 
-## ☁️ Phase 4 — Deploy vCenter Server 8 (Direct on KVM)
+## Phase 4 — Deploy vCenter Server 8 (Direct on KVM)
 
 > **Prerequisite**: Download VCSA 8 ISO → `/var/lib/libvirt/images/VMware-VCSA-all-8.0.2-23504390.iso`
 
@@ -219,7 +219,7 @@ This script:
 
 ---
 
-## 💾 Phase 5 — Deploy Storage VM (iSCSI + NFS)
+## Phase 5 — Deploy Storage VM (iSCSI + NFS)
 
 Run: `sudo bash scripts/04-deploy-storage.sh`
 
@@ -295,7 +295,7 @@ esxcli storage nfs add -H 192.168.100.30 -s /storage/nfs-share -v nfs-shared
 
 ---
 
-## 📊 Phase 6 — Deploy Monitoring VM (Grafana + Prometheus)
+## Phase 6 — Deploy Monitoring VM (Grafana + Prometheus)
 
 Run: `sudo bash scripts/06-deploy-monitoring.sh`
 
@@ -430,7 +430,7 @@ cd /opt/monitoring && sudo docker compose up -d
 
 ---
 
-## 🛡️ Phase 7 — Deploy Proxmox Backup Server
+## Phase 7 — Deploy Proxmox Backup Server
 
 Run: `sudo bash scripts/05-deploy-proxmox.sh`
 
@@ -445,7 +445,7 @@ Run: `sudo bash scripts/05-deploy-proxmox.sh`
 
 ---
 
-## 🏢 Phase 8 — Deploy Windows Server (AD + DNS)
+## Phase 8 — Deploy Windows Server (AD + DNS)
 
 Run: `sudo bash scripts/07-deploy-winserver.sh`
 
@@ -502,7 +502,7 @@ Add-DnsServerResourceRecordA -ZoneName "lab.local" -Name "proxmox"  -IPv4Address
 
 ---
 
-## 🔒 Phase 9 — Deploy pfSense Firewall
+## Phase 9 — Deploy pfSense Firewall
 
 Run: `sudo bash scripts/08-deploy-pfsense.sh`
 
@@ -539,7 +539,7 @@ Access: `https://192.168.100.2` (admin / pfsense)
 
 ---
 
-## ✅ Phase 10 — Post-Deployment Verification
+## Phase 10 — Post-Deployment Verification
 
 ### Connectivity Matrix
 
@@ -547,7 +547,7 @@ Access: `https://192.168.100.2` (admin / pfsense)
 # Run from KVM host
 for ip in 2 10 11 20 30 40 50 60; do
   echo -n "192.168.100.$ip: "
-  ping -c1 -W2 192.168.100.$ip > /dev/null 2>&1 && echo "✅ UP" || echo "❌ DOWN"
+  ping -c1 -W2 192.168.100.$ip > /dev/null 2>&1 && echo "UP" || echo "DOWN"
 done
 ```
 
@@ -566,18 +566,18 @@ done
 
 ### vSphere Cluster Checks
 ```
-✓ Datacenter "MiniDC-Lab" created
-✓ Cluster "HA-Cluster" with HA + DRS enabled
-✓ Both ESXi hosts added and connected
-✓ vMotion network configured (vmk1, 10.0.0.x)
-✓ Shared iSCSI datastore visible on both hosts
-✓ NFS datastore mounted on both hosts
-✓ Test VM migration (vMotion) succeeds
+- Datacenter "MiniDC-Lab" created
+- Cluster "HA-Cluster" with HA + DRS enabled
+- Both ESXi hosts added and connected
+- vMotion network configured (vmk1, 10.0.0.x)
+- Shared iSCSI datastore visible on both hosts
+- NFS datastore mounted on both hosts
+- Test VM migration (vMotion) succeeds
 ```
 
 ---
 
-## 📁 File Structure
+## File Structure
 
 ```
 vm/
@@ -600,7 +600,7 @@ vm/
 
 ---
 
-## ⚠️ Important Notes
+## Important Notes
 
 1. **Nested Virtualization** must be enabled on the KVM host (`kvm_intel nested=1`)
 2. **vCenter on KVM** — deployed directly as QCOW2 VM, NOT inside ESXi. This avoids nested virt lockups.

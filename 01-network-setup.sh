@@ -1,18 +1,18 @@
 #!/bin/bash
-#──────────────────────────────────────────────────────────────
-# 01-network-setup.sh — Create bridge networks for KVM-only lab
-#──────────────────────────────────────────────────────────────
+#
+# 01-network-setup.sh  Create bridge networks for KVM-only lab
+#
 # All VMs (including ESXi) run directly on KVM
 # Three bridges: management, vMotion, iSCSI
-#──────────────────────────────────────────────────────────────
+#
 set -euo pipefail
 
-echo "═══════════════════════════════════════════"
-echo "  Mini-DC Lab2 — Network Setup (KVM-Only)"
-echo "═══════════════════════════════════════════"
+echo ""
+echo "  Mini-DC Lab2  Network Setup (KVM-Only)"
+echo ""
 
-# ─── br0-mgmt: Management Network (192.168.100.0/24) with NAT ───
-echo "[1/3] Creating br0-mgmt (Management — 192.168.100.0/24)..."
+#  br0-mgmt: Management Network (192.168.100.0/24) with NAT 
+echo "[1/3] Creating br0-mgmt (Management  192.168.100.0/24)..."
 if ! virsh net-info br0-mgmt &>/dev/null; then
 cat > /tmp/br0-mgmt.xml << 'EOF'
 <network>
@@ -41,13 +41,13 @@ EOF
   virsh net-start br0-mgmt
   virsh net-autostart br0-mgmt
   rm -f /tmp/br0-mgmt.xml
-  echo "  ✅ br0-mgmt created and started"
+  echo "  br0-mgmt created and started"
 else
-  echo "  ⏭️  br0-mgmt already exists, skipping"
+  echo "  br0-mgmt already exists, skipping"
 fi
 
-# ─── br-vmotion: vMotion Network (10.0.0.0/24) ───
-echo "[2/3] Creating br-vmotion (vMotion — 10.0.0.0/24)..."
+#  br-vmotion: vMotion Network (10.0.0.0/24) 
+echo "[2/3] Creating br-vmotion (vMotion  10.0.0.0/24)..."
 if ! virsh net-info br-vmotion &>/dev/null; then
 cat > /tmp/br-vmotion.xml << 'EOF'
 <network>
@@ -60,13 +60,13 @@ EOF
   virsh net-start br-vmotion
   virsh net-autostart br-vmotion
   rm -f /tmp/br-vmotion.xml
-  echo "  ✅ br-vmotion created and started"
+  echo "  br-vmotion created and started"
 else
-  echo "  ⏭️  br-vmotion already exists, skipping"
+  echo "  br-vmotion already exists, skipping"
 fi
 
-# ─── br-iscsi: iSCSI Storage Network (10.0.1.0/24) ───
-echo "[3/3] Creating br-iscsi (iSCSI — 10.0.1.0/24)..."
+#  br-iscsi: iSCSI Storage Network (10.0.1.0/24) 
+echo "[3/3] Creating br-iscsi (iSCSI  10.0.1.0/24)..."
 if ! virsh net-info br-iscsi &>/dev/null; then
 cat > /tmp/br-iscsi.xml << 'EOF'
 <network>
@@ -79,23 +79,23 @@ EOF
   virsh net-start br-iscsi
   virsh net-autostart br-iscsi
   rm -f /tmp/br-iscsi.xml
-  echo "  ✅ br-iscsi created and started"
+  echo "  br-iscsi created and started"
 else
-  echo "  ⏭️  br-iscsi already exists, skipping"
+  echo "  br-iscsi already exists, skipping"
 fi
 
-# ─── Verify ───
+#  Verify 
 echo ""
-echo "═══════════════════════════════════════════"
+echo ""
 echo "  Network Summary"
-echo "═══════════════════════════════════════════"
+echo ""
 virsh net-list --all
 echo ""
-echo "Management (br0-mgmt — 192.168.100.0/24 NAT):"
+echo "Management (br0-mgmt  192.168.100.0/24 NAT):"
 echo "  .10 esxi01  |  .11 esxi02  |  .20 vcenter01"
 echo "  .30 storage |  .40 monitor |  .50 proxmox"
 echo ""
-echo "vMotion  (br-vmotion — 10.0.0.0/24 isolated)"
-echo "iSCSI    (br-iscsi   — 10.0.1.0/24 isolated)"
+echo "vMotion  (br-vmotion  10.0.0.0/24 isolated)"
+echo "iSCSI    (br-iscsi    10.0.1.0/24 isolated)"
 echo ""
-echo "✅ All networks configured!"
+echo "All networks configured!"

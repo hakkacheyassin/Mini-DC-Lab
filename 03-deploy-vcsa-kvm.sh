@@ -1,11 +1,11 @@
 #!/bin/bash
-#──────────────────────────────────────────────────────────────
-# 03-deploy-vcsa-kvm.sh — Deploy vCenter (VCSA) DIRECTLY on KVM
-#──────────────────────────────────────────────────────────────
+#
+# 03-deploy-vcsa-kvm.sh  Deploy vCenter (VCSA) DIRECTLY on KVM
+#
 # Deploys vCenter Server Appliance directly on KVM, bypassing
 # ESXi entirely. Extracts OVA from ISO, converts VMDKs to
 # QCOW2, and injects OVF environment via ISO.
-#──────────────────────────────────────────────────────────────
+#
 set -euo pipefail
 
 VCSA_ISO="${VCSA_ISO:-/var/lib/libvirt/images/VCSA.iso}"
@@ -18,25 +18,25 @@ SSO_PASS="Hamida1998*/e1337"
 VCSA_NET="br0-mgmt"
 VCSA_MAC="52:54:00:a0:00:20"
 
-# ─── Resources (KVM-only lab — generous allocation) ───
+#  Resources (KVM-only lab  generous allocation) 
 VCSA_RAM=24576    # 24 GB
 VCSA_VCPUS=8
 
-echo "═════════════════════════════════════════════════════════════"
+echo ""
 echo "  Deploying vCenter DIRECTLY on KVM (No ESXi Required)"
-echo "═════════════════════════════════════════════════════════════"
+echo ""
 echo "  RAM: $((VCSA_RAM / 1024)) GB | vCPU: $VCSA_VCPUS | IP: $VCSA_IP"
 echo ""
 
 if [ ! -f "$VCSA_ISO" ]; then
-  echo "❌ VCSA ISO not found at: $VCSA_ISO"
+  echo "VCSA ISO not found at: $VCSA_ISO"
   echo "   Set VCSA_ISO=/path/to/iso before running."
   exit 1
 fi
 
 # Check network exists
 if ! virsh net-info "$VCSA_NET" &>/dev/null; then
-  echo "❌ Network '$VCSA_NET' not found. Run 01-network-setup.sh first."
+  echo "Network '$VCSA_NET' not found. Run 01-network-setup.sh first."
   exit 1
 fi
 
@@ -56,7 +56,7 @@ sudo rm -f "$KVM_DATASTORE"/${VM_NAME}-disk*.qcow2 "$KVM_DATASTORE/${VM_NAME}-in
 
 OVA_FILE=$(find "$VCSA_MOUNT/vcsa" -name "*.ova" | head -n 1)
 if [ -z "$OVA_FILE" ]; then
-  echo "❌ No OVA found in $VCSA_MOUNT/vcsa!"
+  echo "No OVA found in $VCSA_MOUNT/vcsa!"
   exit 1
 fi
 
@@ -68,7 +68,7 @@ echo "[3/5] Converting VMDK disks to QCOW2 (this takes a few minutes)..."
 DISK_ID=1
 for vmdk in "$WORK_DIR"/*.vmdk; do
   qcow_disk="$KVM_DATASTORE/${VM_NAME}-disk${DISK_ID}.qcow2"
-  echo "  > Converting $(basename "$vmdk") → $(basename "$qcow_disk")"
+  echo "  > Converting $(basename "$vmdk") $(basename "$qcow_disk")"
   sudo qemu-img convert -f vmdk -O qcow2 "$vmdk" "$qcow_disk"
   sudo chmod 644 "$qcow_disk"
   DISK_ID=$((DISK_ID + 1))
@@ -139,17 +139,17 @@ sudo virt-install \
   --noautoconsole
 
 echo ""
-echo "═════════════════════════════════════════════════════════════"
-echo "  ✅ vCenter Server deployed on KVM!"
-echo "═════════════════════════════════════════════════════════════"
+echo ""
+echo "  vCenter Server deployed on KVM!"
+echo ""
 echo ""
 echo "  VM:    $VM_NAME"
 echo "  RAM:   $((VCSA_RAM / 1024)) GB"
 echo "  vCPU:  $VCSA_VCPUS"
 echo "  IP:    $VCSA_IP"
 echo ""
-echo "  ⏳ Wait 10-15 minutes for initialization."
-echo "  📺 Monitor:  virsh console $VM_NAME"
-echo "  🔧 VAMI:     https://$VCSA_IP:5480"
-echo "  🌐 vSphere:  https://$VCSA_IP"
-echo "  👤 Login:    administrator@vsphere.local"
+echo "  Wait 10-15 minutes for initialization."
+echo "  Monitor:  virsh console $VM_NAME"
+echo "  VAMI:     https://$VCSA_IP:5480"
+echo "  vSphere:  https://$VCSA_IP"
+echo "  Login:    administrator@vsphere.local"
